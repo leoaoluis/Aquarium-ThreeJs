@@ -16,8 +16,8 @@ export class Aquarium {
     const basePath = '/static/assets/models/aquarium/';
     const modelName = 'aquario';
 
-    const fullMtlPath = this.getAbsolutePath(`${basePath}${modelName}.mtl`);
-    const fullObjPath = this.getAbsolutePath(`${basePath}${modelName}.obj`);
+    const fullMtlPath = `${basePath}${modelName}.mtl`;
+    const fullObjPath = `${basePath}${modelName}.obj`;
 
     console.log(`Carregando aquário de: ${fullMtlPath}`);
 
@@ -63,7 +63,7 @@ export class Aquarium {
 
   addDirtOverlay() {
     const textureLoader = new THREE.TextureLoader();
-    const dirtTexture = textureLoader.load('/static/assets/models/textures/dirt_overlay.png');
+    const dirtTexture = textureLoader.load('./static/assets/models/textures/dirt_overlay.png');
 
     const material = new THREE.MeshBasicMaterial({
       map: dirtTexture,
