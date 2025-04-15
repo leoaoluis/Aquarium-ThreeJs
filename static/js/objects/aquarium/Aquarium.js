@@ -13,7 +13,7 @@ export class Aquarium {
   }
 
   loadAquarium() {
-    const basePath = 'https://leoaoluis.github.io/static/assets/models/aquarium/';
+    const basePath = 'https://leoaoluis/Aquarium-ThreeJs/tree/main/static/assets/models/aquarium/';
 
     const modelName = 'aquario';
 
