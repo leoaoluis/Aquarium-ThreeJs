@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulação 3D de Aquário</title>
+  <link rel="stylesheet" href="./static/css/index.css" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec4 vPosition;
+    attribute vec4 tColor;
+    varying vec4 vColor;
+    uniform vec4 uPosition;
+    uniform mat4 uMatrix;
+    void main() {
+      vColor = tColor;
+      gl_Position = uMatrix * vPosition;
+    }
+  </script>
+  <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    varying vec4 vColor;
+    void main() {
+      gl_FragColor = vColor;
+    }
+  </script>
+</head>
+<body>
+  <canvas id="gl-canvas">
+    Oops! Algo correu mal ao carregar o WebGL.
+  </canvas>
+
+  <div id="blocker">
+    <div id="instructions">
+      <p style="font-size: 36px; font-weight:bold">Clica para jogar</p>
+      <br/><br/>
+      Vista em primeira pessoa: <b>F</b><br/>
+      Movimento: <b>WASD</b> + Rato<br/>
+      Vista exterior: <b>T</b>
+    </div>
+  </div>
+
+  <div id="guis">
+    <div id="manual">
+      <p style="font-size: 25px; font-weight:bold">Manual</p>
+      <br/>
+      Vista em primeira pessoa: <b>F</b><br/>
+      Controlo: <b>WASD</b> + Rato<br/>
+      Vista exterior: <b>T</b><br/>
+      Controlo exterior: Rato
+    </div>
+    <div id="dirty_timer">
+      <p style="font-size: 20px; font-weight:bold">Nível de sujidade:</p>
+      <p id="timer" style="font-size: 20px; font-weight:bold">0%</p>
+    </div>
+    <button id="refair_btn" type="button">Limpar Água</button>
+  </div>
+
+  <div id="interface">
+    <button id="feedBtn">Alimentar Peixes</button>
+    <button id="cleanBtn">Limpar Aquário</button>
+  </div>
+
+  <div id="status">
+    Estado da água: Limpa<br>
+    Peixes: Ativos
+  </div>
+
+  <div id="loadingScreen">
+    <div>Carregando Aquário...</div>
+  </div>
+
+  <script type="module">
+    // Oculta o loading screen após 2 segundos
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loading = document.getElementById('loadingScreen');
+        if (loading) loading.style.display = 'none';
+      }, 2000);
+    });
+  </script>
+
+  <script type="module" src="./static/js/index.js"></script>
+  
+</body>
+</html>
