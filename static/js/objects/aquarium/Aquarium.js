@@ -13,7 +13,8 @@ export class Aquarium {
   }
 
   loadAquarium() {
-    const basePath = '/static/assets/models/aquarium/';
+    const basePath = './static/assets/models/aquarium/';
+
     const modelName = 'aquario';
 
     const fullMtlPath = `${basePath}${modelName}.mtl`;
