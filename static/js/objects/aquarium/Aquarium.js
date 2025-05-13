@@ -3,8 +3,9 @@ import { OBJLoader2 } from '../../modules/OBJLoader2.js';
 import { MTLLoader } from '../../modules/MTLLoader.js';
 
 export class Aquarium {
-  constructor() {
+  constructor(onLoadedCallback) {
     this.mesh = new THREE.Group();
+    this.onLoaded = onLoadedCallback; // callback a chamar depois de carregar
     this.loadAquarium();
   }
 
@@ -36,8 +37,9 @@ export class Aquarium {
       objLoader.load(fullObjPath, (event) => {
         const root = event.detail?.loaderRootNode || event;
 
-        root.rotation.set(9.6, 0, 0);
-        root.scale.set(0.5, 0.5, 0.5);
+        // Usar a mesma orientação e escala do Jola
+        root.rotation.set(Math.PI * -0.5, 0, 0);
+        root.scale.set(7, 15, 7);
         root.position.set(0, 0, 0);
 
         root.traverse((child) => {
@@ -52,7 +54,14 @@ export class Aquarium {
 
         this.mesh.add(root);
         this.addDirtOverlay();
+
+        // Calcular bounding box para enviar posição ao index.js
+        const box = new THREE.Box3().setFromObject(root);
+        const boxSize = box.getSize(new THREE.Vector3()).length();
+        const boxCenter = box.getCenter(new THREE.Vector3());
+
         console.log('Aquário carregado e posicionado corretamente!');
+        if (this.onLoaded) this.onLoaded(boxCenter, boxSize); // callback com info do modelo
       }, undefined, (error) => {
         console.error('Erro ao carregar modelo do aquário:', error);
       });
@@ -73,11 +82,11 @@ export class Aquarium {
       side: THREE.DoubleSide
     });
 
-    const geometry = new THREE.PlaneGeometry(5, 3); // Ajustar conforme dimensões do aquário
+    const geometry = new THREE.PlaneGeometry(5, 3); // Ajustar se necessário
     const dirtMesh = new THREE.Mesh(geometry, material);
     dirtMesh.position.set(0, 1.5, -2.45); // Frente do aquário
 
     this.mesh.add(dirtMesh);
-    this.dirtMesh = dirtMesh; // guardar referência
+    this.dirtMesh = dirtMesh;
   }
 }

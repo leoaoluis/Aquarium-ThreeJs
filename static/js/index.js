@@ -8,8 +8,6 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color('#87CEFA');
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 15, 0);
-
 const renderer = new THREE.WebGLRenderer({ 
   antialias: true, 
   canvas: document.getElementById('gl-canvas') 
@@ -19,19 +17,40 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 // 2. Controles da câmera
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.rotateSpeed = 0.7;
+controls.zoomSpeed = 1.2;
+controls.panSpeed = 0.5;
+controls.minDistance = 5;
+controls.maxDistance = 50;
 
 // 3. Iluminação básica
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(5, 10, 7.5);
-scene.add(light);
-
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(5, 10, 7.5);
+scene.add(directionalLight);
 scene.add(new THREE.AmbientLight(0x404040));
 
 // 4. Criação do aquário e peixes
-const aquarium = new Aquarium();
-scene.add(aquarium.mesh);
+const aquarium = new Aquarium((boxCenter, boxSize) => {
+  // Executado depois do aquário estar carregado
+
+  // Adiciona à cena só depois de carregado
+  scene.add(aquarium.mesh);
+
+  // Calcula o centro do modelo
+  camera.position.set(
+  boxCenter.x + boxSize * 4,
+  boxCenter.y + boxSize * 2,
+  boxCenter.z + boxSize * 6
+  );
+
+  camera.lookAt(boxCenter);
+  controls.target.copy(boxCenter);
+  controls.update();
+});
 
 const fishes = new Fishes(scene);
+
 
 // 5. Sistema de sujidade simplificado
 let dirtLevel = 0;

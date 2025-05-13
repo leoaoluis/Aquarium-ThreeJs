@@ -1,0 +1,23 @@
+{
+  "name": "aquarium-threejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leoaoluis/Aquarium-ThreeJs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leoaoluis/Aquarium-ThreeJs/issues"
+  },
+  "homepage": "https://github.com/leoaoluis/Aquarium-ThreeJs#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
