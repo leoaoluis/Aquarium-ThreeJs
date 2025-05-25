@@ -5,8 +5,9 @@ export class Fish1 extends Fish {
   constructor() {
     super('static/assets/models/fish/fish1/', 0.05, 1.8);
     this.colorHue = 0.1 + Math.random() * 0.15;
-    this.waveIntensity = 0.5 + Math.random();
-    this.phase = Math.random() * Math.PI * 2;
+    this.speed = 0.1 + Math.random() * 0.05;
+    this.margin = 0.8;
+    this.fixedZ = 0; // valor de profundidade onde o peixe nada
   }
 
   getModelName() {
@@ -15,7 +16,7 @@ export class Fish1 extends Fish {
 
   onFishLoaded(model) {
     model.traverse(child => {
-      if (child.isMesh) {
+      if (child.isMesh && child.material) {
         if (child.material.name.includes('body')) {
           child.material.color.setHSL(this.colorHue, 0.9, 0.5);
           child.material.shininess = 50;
@@ -24,20 +25,25 @@ export class Fish1 extends Fish {
         }
       }
     });
+
+    model.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
+    model.scale.set(0.1, 0.1, 0.1);
   }
 
-  move() {
-    this.phase += 0.012 * this.baseSpeed;
+  setBoundingBox(box) {
+    this.boundingBox = box;
 
-    this.mesh.position.x = 2.5 * Math.sin(this.phase * 0.7);
-    this.mesh.position.z = 1.8 * Math.sin(this.phase * 1.3);
-    this.mesh.position.y = 0.4 * Math.sin(this.phase * 2.5) * this.waveIntensity;
+    // Calcular Z fixo no meio da caixa
+    const minZ = box.min.z + this.margin;
+    const maxZ = box.max.z - this.margin;
+    this.fixedZ = (minZ + maxZ) / 2;
 
-    this.mesh.rotation.y = Math.atan2(
-      this.mesh.position.z,
-      this.mesh.position.x
-    ) - Math.PI / 2;
+    // Posicionar o peixe no início
+    const initialX = THREE.MathUtils.randFloat(box.min.x + this.margin, box.max.x - this.margin);
+    const initialY = THREE.MathUtils.randFloat(box.min.y + this.margin, box.max.y - this.margin);
+    this.mesh.position.set(initialX, initialY, this.fixedZ);
 
-    this.mesh.rotation.z = 0.15 * Math.sin(this.phase * 3);
+    // Iniciar movimento
+    this.setNewTarget();
   }
 }

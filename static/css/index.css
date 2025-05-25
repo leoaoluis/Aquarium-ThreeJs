@@ -46,17 +46,24 @@ canvas {
   padding: 8px 12px;
   border: 2px solid #00bfff;
   border-radius: 4px;
-  background: transparent;
-  color: #00bfff;
+  background-color: #00bfff; /* fundo sólido por padrão */
+  color: #fff;               /* texto branco */
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
 
 #interface button:hover {
-  background-color: #00bfff;
-  color: #fff;
+  background-color: #0099cc;
+  border-color: #0099cc;
 }
+
+#interface button:active {
+  background-color: transparent; /* transparente ao clicar */
+  color: #00bfff;
+}
+
+
 
 #status {
   position: absolute;

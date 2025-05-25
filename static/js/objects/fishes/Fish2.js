@@ -1,15 +1,13 @@
 import * as THREE from '../../modules/three_rev.js';
-import { OBJLoader2 } from '../../modules/OBJLoader2.js';
-import { MTLLoader } from '../../modules/MTLLoader.js';
-
 import { Fish } from './Fish.js';
 
 export class Fish2 extends Fish {
   constructor() {
-    super('static/assets/models/fish/fish2/', 0.4, 2.0);
-    this.colorHue = 0.6 + Math.random() * 0.1;
-    this.amplitude = 0.5 + Math.random() * 0.5;
-    this.phase = Math.random() * Math.PI * 2;
+    super('static/assets/models/fish/fish2/', 0.045, 1.9); // ligeiramente mais pequeno e rápido
+    this.colorHue = 0.4 + Math.random() * 0.15; // verde-azulado
+    this.speed = 0.12 + Math.random() * 0.03;
+    this.margin = 0.8;
+    this.fixedZ = 0;
   }
 
   getModelName() {
@@ -18,22 +16,33 @@ export class Fish2 extends Fish {
 
   onFishLoaded(model) {
     model.traverse(child => {
-      if (child.isMesh) {
-        child.material.color.setHSL(this.colorHue, 0.7, 0.5);
+      if (child.isMesh && child.material) {
+        if (child.material.name.includes('body')) {
+          child.material.color.setHSL(this.colorHue, 0.9, 0.5);
+          child.material.shininess = 40;
+        } else if (child.material.name.includes('fin')) {
+          child.material.color.setHSL(this.colorHue + 0.1, 0.7, 0.7);
+        }
       }
     });
+
+    model.rotation.x += Math.PI / 2;
+    model.rotation.z += Math.PI;
+    model.rotation.y += Math.PI;
+    model.scale.set(0.5, 0.5, 0.5); 
   }
 
-  move() {
-    this.phase += 0.01 * this.baseSpeed;
+  setBoundingBox(box) {
+    this.boundingBox = box;
 
-    this.mesh.position.x = 2 * Math.cos(this.phase * 0.8);
-    this.mesh.position.z = 2 * Math.sin(this.phase * 0.8);
-    this.mesh.position.y = 0.3 * Math.sin(this.phase * 3) * this.amplitude;
+    const minZ = box.min.z + this.margin;
+    const maxZ = box.max.z - this.margin;
+    this.fixedZ = (minZ + maxZ) / 2;
 
-    this.mesh.rotation.y = Math.atan2(
-      this.mesh.position.z,
-      this.mesh.position.x
-    ) + Math.PI / 2;
+    const initialX = THREE.MathUtils.randFloat(box.min.x + this.margin, box.max.x - this.margin);
+    const initialY = THREE.MathUtils.randFloat(box.min.y + this.margin, box.max.y - this.margin);
+    this.mesh.position.set(initialX, initialY, this.fixedZ);
+
+    this.setNewTarget();
   }
 }

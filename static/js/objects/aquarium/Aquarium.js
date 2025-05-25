@@ -5,7 +5,9 @@ import { MTLLoader } from '../../modules/MTLLoader.js';
 export class Aquarium {
   constructor(onLoadedCallback) {
     this.mesh = new THREE.Group();
-    this.onLoaded = onLoadedCallback; // callback a chamar depois de carregar
+    this.onLoaded = onLoadedCallback;
+    this.dirtTarget = null;
+    this.boundingBox = null;
     this.loadAquarium();
   }
 
@@ -37,9 +39,8 @@ export class Aquarium {
       objLoader.load(fullObjPath, (event) => {
         const root = event.detail?.loaderRootNode || event;
 
-        // Usar a mesma orientação e escala do Jola
         root.rotation.set(Math.PI * -0.5, 0, 0);
-        root.scale.set(7, 15, 7);
+        root.scale.set(1.5, 1.5, 1.5);
         root.position.set(0, 0, 0);
 
         root.traverse((child) => {
@@ -48,45 +49,49 @@ export class Aquarium {
             child.receiveShadow = true;
             if (child.material) {
               child.material.side = THREE.DoubleSide;
+              const matName = child.material.name?.toLowerCase() || '';
+              if (!this.dirtTarget && (matName.includes('glass') || matName.includes('vidro'))) {
+                this.dirtTarget = child.material;
+                this.dirtTarget.transparent = true;
+                this.dirtTarget.opacity = 0.35;
+                this.dirtTarget.color.setRGB(0.1, 0.2, 0.7);
+              }
             }
           }
         });
 
         this.mesh.add(root);
-        this.addDirtOverlay();
 
-        // Calcular bounding box para enviar posição ao index.js
-        const box = new THREE.Box3().setFromObject(root);
-        const boxSize = box.getSize(new THREE.Vector3()).length();
-        const boxCenter = box.getCenter(new THREE.Vector3());
+        // ⚠️ Ajusta aqui a caixa manual com base no interior do aquário
+        const center = new THREE.Vector3(0, 14, 0);
+        const halfSize = new THREE.Vector3(23, 10.5, 8);
+        this.boundingBox = new THREE.Box3().setFromCenterAndSize(center, halfSize.multiplyScalar(2));
+        console.log('BoundingBox manual definida:', this.boundingBox.min, this.boundingBox.max);
 
-        console.log('Aquário carregado e posicionado corretamente!');
-        if (this.onLoaded) this.onLoaded(boxCenter, boxSize); // callback com info do modelo
+        // Helper visual (opcional)
+        // const helper = new THREE.Box3Helper(this.boundingBox, 0xff0000);
+        // this.mesh.add(helper);
+
+        const boxSize = this.boundingBox.getSize(new THREE.Vector3()).length();
+        const boxCenter = this.boundingBox.getCenter(new THREE.Vector3());
+
+        // ✅ Callback quando tudo está carregado
+        if (this.onLoaded) this.onLoaded(boxCenter, boxSize, this.boundingBox);
+
+        // ✅ Registra botão de som de limpeza (se ainda não foi feito em index.js)
+        const cleanAudio = document.getElementById('clean');
+        const cleanBtn = document.getElementById('cleanBtn');
+        if (cleanBtn && cleanAudio) {
+          cleanBtn.addEventListener('click', () => {
+            cleanAudio.currentTime = 0;
+            cleanAudio.play().catch(e => console.warn('Som de limpeza falhou:', e));
+          });
+        }
       }, undefined, (error) => {
         console.error('Erro ao carregar modelo do aquário:', error);
       });
     }, undefined, (error) => {
       console.error('Erro ao carregar materiais do aquário:', error);
     });
-  }
-
-  addDirtOverlay() {
-    const textureLoader = new THREE.TextureLoader();
-    const dirtTexture = textureLoader.load('/static/assets/models/textures/dirt_overlay.png');
-
-    const material = new THREE.MeshBasicMaterial({
-      map: dirtTexture,
-      transparent: true,
-      opacity: 0,
-      depthWrite: false,
-      side: THREE.DoubleSide
-    });
-
-    const geometry = new THREE.PlaneGeometry(5, 3); // Ajustar se necessário
-    const dirtMesh = new THREE.Mesh(geometry, material);
-    dirtMesh.position.set(0, 1.5, -2.45); // Frente do aquário
-
-    this.mesh.add(dirtMesh);
-    this.dirtMesh = dirtMesh;
   }
 }
