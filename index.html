@@ -1,3 +1,9 @@
+<script>
+  if (!document.referrer.includes('menu.html')) {
+    window.location.href = 'menu.html';
+  }
+</script>
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -8,12 +14,55 @@
   <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 </head>
 <body>
+  <!-- Painel de controlo dos peixes (expandível) -->
+  <div id="fishMenu" class="collapsed">
+    <button id="toggleFishMenu">Peixes ▼</button>
+    <div id="fishList" class="hidden">
+      <div class="fishItem" data-fishtype="Fish1">
+        <img src="/static/assets/fish1_thumb.png" alt="Nemo" />
+        <div class="fishInfo">
+          <h4>Nemo (Clown Fish)</h4>
+          <p>Small colorful clownfish native to coral reefs.</p>
+          <div class="fishControls">
+            <button class="fishMinus">−</button>
+            <span class="fishCount">1</span>
+            <button class="fishPlus">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="fishItem" data-fishtype="Fish2">
+        <img src="/static/assets/fish2_thumb.png" alt="Bicolor Blenny" />
+        <div class="fishInfo">
+          <h4>Bicolor Blenny</h4>
+          <p>A small fish with a distinct two-color pattern, curious and active.</p>
+          <div class="fishControls">
+            <button class="fishMinus">−</button>
+            <span class="fishCount">1</span>
+            <button class="fishPlus">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="fishItem" data-fishtype="Fish3">
+        <img src="/static/assets/fish3_thumb.png" alt="Chrysiptera parasema" />
+        <div class="fishInfo">
+          <h4>Chrysiptera parasema</h4>
+          <p>Known as Yellowtail Damselfish, vibrant blue with yellow tail.</p>
+          <div class="fishControls">
+            <button class="fishMinus">−</button>
+            <span class="fishCount">1</span>
+            <button class="fishPlus">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <canvas id="gl-canvas">
     Oops! Algo correu mal ao carregar o WebGL.
   </canvas>
 
   <!-- Instruções de Controlo -->
-  <div id="blocker">
+  <div id="blocker" style="display:flex;">
     <div id="instructions">
       <p style="font-size: 36px; font-weight:bold">Clica para jogar</p>
       <br/><br/>
@@ -27,33 +76,20 @@
   <audio id="feedSound" src="./static/sounds/feedSound.wav" preload="auto"></audio>
   <audio id="clean" src="./static/sounds/clean.wav" preload="auto"></audio>
 
-  <!-- Guias de Utilizador -->
-  <div id="guis">
-    <div id="manual">
-      <p style="font-size: 25px; font-weight:bold">Manual</p>
-      <br/>
-      Vista em primeira pessoa: <b>F</b><br/>
-      Controlo: <b>WASD</b> + Rato<br/>
-      Vista exterior: <b>T</b><br/>
-      Controlo exterior: Rato
-    </div>
-    <div id="dirty_timer">
-      <p style="font-size: 20px; font-weight:bold">Nível de sujidade:</p>
-      <p id="timer" style="font-size: 20px; font-weight:bold">0%</p>
-    </div>
-    <button id="refair_btn" type="button">Limpar Água</button>
-  </div>
-
   <!-- Interface de Interação -->
   <div id="interface">
     <button id="feedBtn">Alimentar Peixes</button>
     <button id="cleanBtn">Limpar Aquário</button>
+
+    <!-- Novos botões para controlo de câmara -->
+    <button id="fpViewBtn">Vista 1ª Pessoa (F)</button>
+    <button id="tpViewBtn">Vista Exterior (T)</button>
   </div>
 
   <!-- Estado do Aquário -->
   <div id="status">
     Estado da água: <span id="dirtStatus">0%</span><br>
-    <span id="hungerStatus"> </span><br>
+    Fome: <span id="hungerStatus">0%</span><br>
     Peixes: <span id="fishState">Ativos</span>
   </div>
 
@@ -62,13 +98,46 @@
     <div>Carregando Aquário...</div>
   </div>
 
-  <!-- Script para ocultar loading -->
+  <!-- Pause Menu -->
+  <div id="pauseMenu" style="display:none;">
+    <button id="continueBtn" class="menu-btn">Continuar</button>
+    <button id="mainMenuBtn" class="menu-btn">Menu Principal</button>
+    <button id="aboutBtn" class="menu-btn">Sobre</button>
+  </div>
+
+  <!-- Scripts -->
   <script type="module">
     window.addEventListener('load', () => {
       setTimeout(() => {
         const loading = document.getElementById('loadingScreen');
         if (loading) loading.style.display = 'none';
       }, 2000);
+    });
+
+    // Faz o blocker desaparecer ao clicar para começar o jogo
+    window.addEventListener('load', () => {
+      const blocker = document.getElementById('blocker');
+      blocker.style.display = 'flex'; // garantir visível no início
+
+      blocker.addEventListener('click', () => {
+        blocker.style.display = 'none';
+      });
+    });
+
+    // Expande / recolhe painel dos peixes
+    window.addEventListener('load', () => {
+      const toggleBtn = document.getElementById('toggleFishMenu');
+      const fishList = document.getElementById('fishList');
+
+      toggleBtn.addEventListener('click', () => {
+        if (fishList.classList.contains('hidden')) {
+          fishList.classList.remove('hidden');
+          toggleBtn.textContent = 'Peixes ▲';
+        } else {
+          fishList.classList.add('hidden');
+          toggleBtn.textContent = 'Peixes ▼';
+        }
+      });
     });
   </script>
 

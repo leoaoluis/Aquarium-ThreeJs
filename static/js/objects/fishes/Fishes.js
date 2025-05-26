@@ -13,19 +13,68 @@ export class Fishes {
     this.lastUpdate = Date.now();
     this.boostUntil = 0;
 
-    this.createFishGroup(Fish1, 2);
-    this.createFishGroup(Fish2, 2);
-    this.createFishGroup(Fish3, 2);
+    this.fishTypes = [Fish1, Fish2, Fish3];
+
+    // Quantidade total de peixes entre 6 e 15
+    const totalFishes = Math.floor(Math.random() * 10) + 6;
+
+    // Primeiro adiciona 2 de cada tipo
+    this.fishTypes.forEach(FishType => {
+      for (let i = 0; i < 2; i++) {
+        this._addFishInternal(FishType);
+      }
+    });
+
+    // Completa até totalFishes com peixes aleatórios
+    const remaining = totalFishes - this.fishes.length;
+    for (let i = 0; i < remaining; i++) {
+      const FishType = this.fishTypes[Math.floor(Math.random() * this.fishTypes.length)];
+      this._addFishInternal(FishType);
+    }
   }
 
-  createFishGroup(FishType, count) {
-    for (let i = 0; i < count; i++) {
-      const fish = new FishType();
-      if (this.boundingBox && typeof fish.setBoundingBox === 'function') {
-        fish.setBoundingBox(this.boundingBox);
-      }
-      this.scene.add(fish.mesh);
-      this.fishes.push(fish);
+  _addFishInternal(FishType) {
+    const fish = new FishType();
+    if (this.boundingBox && typeof fish.setBoundingBox === 'function') {
+      fish.setBoundingBox(this.boundingBox);
+    }
+    this.scene.add(fish.mesh);
+    this.fishes.push(fish);
+    return fish;
+  }
+
+  // Adiciona peixe do tipo fishType (string 'Fish1', 'Fish2' ou 'Fish3')
+  addFish(fishTypeStr) {
+    const FishType = this._getFishClassByName(fishTypeStr);
+    if (!FishType) return;
+
+    // Limite máximo de peixes no aquário (20)
+    if (this.fishes.length >= 20) return;
+
+    this._addFishInternal(FishType);
+  }
+
+  // Remove um peixe do tipo fishTypeStr, o último adicionado desse tipo
+  removeFish(fishTypeStr) {
+    const FishType = this._getFishClassByName(fishTypeStr);
+    if (!FishType) return;
+
+    // Não deixa ter menos de 1 peixe desse tipo
+    const fishesOfType = this.fishes.filter(f => f instanceof FishType);
+    if (fishesOfType.length <= 1) return;
+
+    // Remove o último peixe desse tipo da cena e do array
+    const fishToRemove = fishesOfType[fishesOfType.length - 1];
+    this.scene.remove(fishToRemove.mesh);
+    this.fishes.splice(this.fishes.indexOf(fishToRemove), 1);
+  }
+
+  _getFishClassByName(name) {
+    switch(name) {
+      case 'Fish1': return Fish1;
+      case 'Fish2': return Fish2;
+      case 'Fish3': return Fish3;
+      default: return null;
     }
   }
 

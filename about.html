@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>About the Project</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #cceeff, #ffffff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #003366;
+    }
+
+    #container {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px 60px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      max-width: 700px;
+    }
+
+    h1 {
+      font-size: 2.8em;
+      margin-bottom: 20px;
+      color: #004d99;
+    }
+
+    p {
+      font-size: 1.3em;
+      line-height: 1.6;
+    }
+
+    a.button {
+      display: inline-block;
+      margin-top: 25px;
+      text-decoration: none;
+      color: #ffffff;
+      background-color: #0066cc;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 1.1em;
+      transition: 0.3s ease;
+    }
+
+    a.button:hover {
+      background-color: #004d99;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="container">
+    <h1>About the Aquarium 3D Simulator</h1>
+    <p>
+      This project was developed by <strong>Leonardo Luos</strong> as part of the course <strong>Introduction to Computer Graphics</strong> at the <strong>University of Aveiro</strong>.
+    </p>
+    <p>
+      It is an interactive 3D simulation of an aquarium built using <strong>Three.js</strong>, featuring multiple camera modes, animated fish, water quality simulation, and environmental interactions.
+    </p>
+    <a id="backButton" class="button">Go Back</a>
+  </div>
+
+  <script>
+    const backButton = document.getElementById('backButton');
+    if (document.referrer.includes('index.html')) {
+      backButton.href = 'index.html';
+      backButton.textContent = 'Back to Simulation';
+    } else {
+      backButton.href = 'menu.html';
+      backButton.textContent = 'Back to Main Menu';
+    }
+  </script>
+
+</body>
+</html>

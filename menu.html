@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Principal - Aquário 3D</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to bottom, #87cefa, #ffffff);
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #menu {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+    #menu h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #003366;
+    }
+    .menu-btn {
+      font-size: 1.2em;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+      background-color: #0066cc;
+      color: white;
+      transition: background-color 0.3s;
+    }
+    .menu-btn:hover {
+      background-color: #004d99;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="menu">
+    <h1>Simulador 3D de Aquário</h1>
+    <button id="startBtn" class="menu-btn">Iniciar</button>
+    <button id="aboutBtn" class="menu-btn">Sobre</button>
+    <button id="exitBtn" class="menu-btn">Sair</button>
+  </div>
+
+  <script>
+    document.getElementById('startBtn').onclick = () => {
+      window.location.href = './index.html';
+    };
+
+    document.getElementById('aboutBtn').onclick = () => {
+      window.location.href = './about.html';
+    };
+
+
+    document.getElementById('exitBtn').onclick = () => {
+      window.close(); // Pode não funcionar em todos os browsers
+    };
+
+    let keys = [];
+    window.addEventListener('keydown', (e) => {
+      keys.push(e.key.toLowerCase());
+      if (keys.slice(-2).join('') === 'ai') {
+        document.getElementById('startBtn').click();
+      }
+    });
+  </script>
+
+</body>
+</html>
