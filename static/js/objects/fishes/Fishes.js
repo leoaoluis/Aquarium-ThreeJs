@@ -149,7 +149,7 @@ export class Fishes {
     }
 
     if (fishState) {
-      fishState.textContent = this.hungerLevel >= 100 ? 'Parados' : 'Ativos';
+      fishState.textContent = this.hungerLevel >= 100 ? 'Freeze' : 'Active';
     }
   }
 
@@ -170,6 +170,6 @@ export class Fishes {
   }
 
   getFishStatus() {
-    return this.hungerLevel >= 100 ? 'Parados' : 'Ativos';
+    return this.hungerLevel >= 100 ? 'Freeze' : 'Active';
   }
 }

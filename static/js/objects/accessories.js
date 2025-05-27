@@ -8,7 +8,7 @@ export class Accessories {
     this.scene = scene;
     this.loadTable();
     this.loadPainting();
-    this.createRoom(); // ✅ Adiciona as paredes, chão e teto
+    this.createRoom(); 
   }
 
   loadModel(objPath, mtlPath, position, scale = 1, rotation = null) {
@@ -57,6 +57,8 @@ export class Accessories {
     const rotation = [0, Math.PI / -2, 0];
     this.loadModel(obj, mtl, position, 80, rotation);
   }
+
+
 
   createRoom() {
     const loader = new THREE.TextureLoader();
