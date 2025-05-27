@@ -62,23 +62,18 @@ export class Aquarium {
 
         this.mesh.add(root);
 
-        // ⚠️ Ajusta aqui a caixa manual com base no interior do aquário
+        // Caixa manual para interior aquário
         const center = new THREE.Vector3(0, 14, 0);
         const halfSize = new THREE.Vector3(23, 10.5, 8);
         this.boundingBox = new THREE.Box3().setFromCenterAndSize(center, halfSize.multiplyScalar(2));
         console.log('BoundingBox manual definida:', this.boundingBox.min, this.boundingBox.max);
 
-        // Helper visual (opcional)
-        // const helper = new THREE.Box3Helper(this.boundingBox, 0xff0000);
-        // this.mesh.add(helper);
-
         const boxSize = this.boundingBox.getSize(new THREE.Vector3()).length();
         const boxCenter = this.boundingBox.getCenter(new THREE.Vector3());
 
-        // ✅ Callback quando tudo está carregado
         if (this.onLoaded) this.onLoaded(boxCenter, boxSize, this.boundingBox);
 
-        // ✅ Registra botão de som de limpeza (se ainda não foi feito em index.js)
+        // Som limpeza
         const cleanAudio = document.getElementById('clean');
         const cleanBtn = document.getElementById('cleanBtn');
         if (cleanBtn && cleanAudio) {

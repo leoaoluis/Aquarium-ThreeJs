@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>About the Project</title>
   <style>
     body {
@@ -46,6 +46,7 @@
       border-radius: 8px;
       font-size: 1.1em;
       transition: 0.3s ease;
+      cursor: pointer;
     }
 
     a.button:hover {
@@ -68,12 +69,26 @@
 
   <script>
     const backButton = document.getElementById('backButton');
-    if (document.referrer.includes('index.html')) {
-      backButton.href = 'index.html';
+    const cameFrom = sessionStorage.getItem('cameFrom');
+
+    if (cameFrom && cameFrom.includes('index.html')) {
       backButton.textContent = 'Back to Simulation';
-    } else {
-      backButton.href = 'menu.html';
+      backButton.onclick = () => {
+        sessionStorage.removeItem('cameFrom');
+        window.location.href = 'index.html';
+      };
+    } else if (cameFrom && cameFrom.includes('menu.html')) {
       backButton.textContent = 'Back to Main Menu';
+      backButton.onclick = () => {
+        sessionStorage.removeItem('cameFrom');
+        window.location.href = 'menu.html';
+      };
+    } else {
+      backButton.textContent = 'Back to Main Menu';
+      backButton.onclick = () => {
+        sessionStorage.removeItem('cameFrom');
+        window.location.href = 'menu.html';
+      };
     }
   </script>
 

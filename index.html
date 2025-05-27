@@ -31,10 +31,10 @@
         </div>
       </div>
       <div class="fishItem" data-fishtype="Fish2">
-        <img src="/static/assets/fish2_thumb.png" alt="Bicolor Blenny" />
+        <img src="/static/assets/fish3_thumb.png" alt="Chrysiptera parasema" />
         <div class="fishInfo">
-          <h4>Bicolor Blenny</h4>
-          <p>A small fish with a distinct two-color pattern, curious and active.</p>
+          <h4>Chrysiptera parasema</h4>
+          <p>Known as Yellowtail Damselfish, vibrant blue with yellow tail.</p>
           <div class="fishControls">
             <button class="fishMinus">−</button>
             <span class="fishCount">1</span>
@@ -43,10 +43,10 @@
         </div>
       </div>
       <div class="fishItem" data-fishtype="Fish3">
-        <img src="/static/assets/fish3_thumb.png" alt="Chrysiptera parasema" />
+        <img src="/static/assets/fish2_thumb.png" alt="Bicolor Blenny" />
         <div class="fishInfo">
           <h4>Chrysiptera parasema</h4>
-          <p>Known as Yellowtail Damselfish, vibrant blue with yellow tail.</p>
+          <p>A small fish with a distinct two-color pattern, curious and active.</p>
           <div class="fishControls">
             <button class="fishMinus">−</button>
             <span class="fishCount">1</span>
@@ -75,6 +75,8 @@
   <!-- Áudio -->
   <audio id="feedSound" src="./static/sounds/feedSound.wav" preload="auto"></audio>
   <audio id="clean" src="./static/sounds/clean.wav" preload="auto"></audio>
+  <audio id="press1Sound" src="./static/sounds/press1.mp3" preload="auto"></audio>
+  <audio id="press2Sound" src="./static/sounds/press2.mp3" preload="auto"></audio>
 
   <!-- Interface de Interação -->
   <div id="interface">
@@ -87,10 +89,19 @@
   </div>
 
   <!-- Estado do Aquário -->
-  <div id="status">
-    Estado da água: <span id="dirtStatus">0%</span><br>
-    Fome: <span id="hungerStatus">0%</span><br>
-    Peixes: <span id="fishState">Ativos</span>
+  <div id="status" class="status-panel">
+    <div class="status-item">
+      <span class="status-label">Estado da Água:</span>
+      <span id="dirtStatus" class="status-value">0%</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Nível de Fome:</span>
+      <span id="hungerStatus" class="status-value">0%</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Estado dos Peixes:</span>
+      <span id="fishState" class="status-value">Ativos</span>
+    </div>
   </div>
 
   <!-- Ecrã de Carregamento -->
@@ -113,6 +124,15 @@
         if (loading) loading.style.display = 'none';
       }, 2000);
     });
+
+    const aboutBtn = document.getElementById('aboutBtn');
+    if (aboutBtn) {
+      aboutBtn.addEventListener('click', () => {
+        sessionStorage.setItem('cameFrom', 'index.html');
+        window.location.href = './about.html';
+      });
+    }
+
 
     // Faz o blocker desaparecer ao clicar para começar o jogo
     window.addEventListener('load', () => {

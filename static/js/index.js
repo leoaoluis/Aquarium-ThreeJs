@@ -64,6 +64,24 @@ const initialCameraPosition = new THREE.Vector3();
 
 const pauseMenu = document.getElementById('pauseMenu');
 
+window.addEventListener('DOMContentLoaded', () => {
+  // Corrigido toggle do menu peixes
+  const toggleBtn = document.getElementById('toggleFishMenu');
+  const fishMenu = document.getElementById('fishMenu');
+
+  if (toggleBtn && fishMenu) {
+    toggleBtn.addEventListener('click', () => {
+      if (fishMenu.classList.contains('collapsed')) {
+        fishMenu.classList.remove('collapsed');
+        toggleBtn.textContent = 'Peixes ▲';
+      } else {
+        fishMenu.classList.add('collapsed');
+        toggleBtn.textContent = 'Peixes ▼';
+      }
+    });
+  }
+});
+
 const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
   scene.add(aquarium.mesh);
 
@@ -112,9 +130,13 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
   const fishes = new Fishes(scene);
   fishes.setBoundingBox(boundingBox);
 
+  // Novos elementos de áudio
+  const press1Sound = document.getElementById('press1Sound');
+  const press2Sound = document.getElementById('press2Sound');
+
   // Liga os botões do menu de peixes para controlar o aquário
-  const fishMenu = document.getElementById('fishList');
-  fishMenu.querySelectorAll('.fishItem').forEach(item => {
+  const fishMenuList = document.getElementById('fishList');
+  fishMenuList.querySelectorAll('.fishItem').forEach(item => {
     const fishType = item.getAttribute('data-fishtype');
 
     const plusBtn = item.querySelector('.fishPlus');
@@ -124,11 +146,19 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
     plusBtn.addEventListener('click', () => {
       fishes.addFish(fishType);
       updateFishCount(fishType);
+      if (press1Sound) {
+        press1Sound.currentTime = 0;
+        press1Sound.play();
+      }
     });
 
     minusBtn.addEventListener('click', () => {
       fishes.removeFish(fishType);
       updateFishCount(fishType);
+      if (press2Sound) {
+        press2Sound.currentTime = 0;
+        press2Sound.play();
+      }
     });
 
     // Atualiza visualmente a contagem de peixes naquele tipo no menu

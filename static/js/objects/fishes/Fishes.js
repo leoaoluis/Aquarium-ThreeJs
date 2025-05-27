@@ -145,7 +145,7 @@ export class Fishes {
     const fishState = document.getElementById('fishState');
 
     if (label) {
-      label.textContent = `Fome: ${Math.round(this.hungerLevel)}%`;
+      label.textContent = ` ${Math.round(this.hungerLevel)}%`;
     }
 
     if (fishState) {
