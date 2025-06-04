@@ -3,8 +3,8 @@ import { Fish } from './Fish.js';
 
 export class Fish2 extends Fish {
   constructor() {
-    super('static/assets/models/fish/fish2/', 0.045, 1.9); // ligeiramente mais pequeno e rápido
-    this.colorHue = 0.4 + Math.random() * 0.15; // verde-azulado
+    super('static/assets/models/fish/fish2/', 0.045, 1.9);
+    this.colorHue = 0.4 + Math.random() * 0.15; 
     this.speed = 0.12 + Math.random() * 0.03;
     this.margin = 0.8;
     this.fixedZ = 0;

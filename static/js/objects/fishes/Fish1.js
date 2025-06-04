@@ -7,7 +7,7 @@ export class Fish1 extends Fish {
     this.colorHue = 0.1 + Math.random() * 0.15;
     this.speed = 0.1 + Math.random() * 0.05;
     this.margin = 0.8;
-    this.fixedZ = 0; // valor de profundidade onde o peixe nada
+    this.fixedZ = 0; 
   }
 
   getModelName() {
@@ -33,17 +33,14 @@ export class Fish1 extends Fish {
   setBoundingBox(box) {
     this.boundingBox = box;
 
-    // Calcular Z fixo no meio da caixa
     const minZ = box.min.z + this.margin;
     const maxZ = box.max.z - this.margin;
     this.fixedZ = (minZ + maxZ) / 2;
 
-    // Posicionar o peixe no início
     const initialX = THREE.MathUtils.randFloat(box.min.x + this.margin, box.max.x - this.margin);
     const initialY = THREE.MathUtils.randFloat(box.min.y + this.margin, box.max.y - this.margin);
     this.mesh.position.set(initialX, initialY, this.fixedZ);
 
-    // Iniciar movimento
     this.setNewTarget();
   }
 }

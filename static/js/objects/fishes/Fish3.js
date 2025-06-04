@@ -3,8 +3,8 @@ import { Fish } from './Fish.js';
 
 export class Fish3 extends Fish {
   constructor() {
-    super('static/assets/models/fish/fish3/', 0.07, 1.4); // maior e mais lento
-    this.colorHue = 0.6 + Math.random() * 0.15; // azul-violeta
+    super('static/assets/models/fish/fish3/', 0.07, 1.4); 
+    this.colorHue = 0.6 + Math.random() * 0.15;
     this.speed = 0.08 + Math.random() * 0.03;
     this.margin = 0.8;
     this.fixedZ = 0;
@@ -28,7 +28,7 @@ export class Fish3 extends Fish {
 
     model.rotation.x += Math.PI / 2;
     model.rotation.y += Math.PI;
-    model.scale.set(0.9, 0.9, 0.9); // maior
+    model.scale.set(0.9, 0.9, 0.9); 
   }
 
   setBoundingBox(box) {

@@ -188,13 +188,12 @@ var Reflector = function (geometry, options) {
     var currentXrEnabled = renderer.xr.enabled;
     var currentShadowAutoUpdate = renderer.shadowMap.autoUpdate;
 
-    renderer.xr.enabled = false; // Avoid camera modification
-    renderer.shadowMap.autoUpdate = false; // Avoid re-computing shadows
+    renderer.xr.enabled = false; 
+    renderer.shadowMap.autoUpdate = false; 
 
     renderer.setRenderTarget(renderTarget);
 
-    renderer.state.buffers.depth.setMask(true); // make sure the depth buffer is writable so it can be properly cleared, see #18897
-
+    renderer.state.buffers.depth.setMask(true); 
     if (renderer.autoClear === false) renderer.clear();
     renderer.render(scene, virtualCamera);
 

@@ -123,12 +123,12 @@ export class Fish {
 
     direction.normalize();
 
-    // ✅ Aplica fator de fome ao movimento
+    // Applies hunger factor to movement
     const adjustedSpeed = this.speedFactor * 2 * hungerFactor;
     this.velocity.lerp(direction.multiplyScalar(adjustedSpeed), 0.05);
     this.mesh.position.add(this.velocity);
 
-    // ✅ Rotação horizontal (Y) apenas se mudar de direção no eixo X
+    // Horizontal rotation (Y) only if you change direction on the X axis
     const flatVelocity = this.velocity.clone();
     flatVelocity.y = 0;
 
@@ -147,7 +147,7 @@ export class Fish {
       this.mesh.rotation.set(0, this.currentRotationY, 0);
     }
 
-    // ✅ Limitar à bounding box
+    // Limit to bounding box
     if (this.boundingBox) {
       const pos = this.mesh.position;
       pos.x = THREE.MathUtils.clamp(pos.x, this.boundingBox.min.x + this.margin, this.boundingBox.max.x - this.margin);

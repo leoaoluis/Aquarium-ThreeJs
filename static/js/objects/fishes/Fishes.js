@@ -15,17 +15,17 @@ export class Fishes {
 
     this.fishTypes = [Fish1, Fish2, Fish3];
 
-    // Quantidade total de peixes entre 6 e 15
+    // Total number of fish between 6 and 15
     const totalFishes = Math.floor(Math.random() * 10) + 6;
 
-    // Primeiro adiciona 2 de cada tipo
+    // First add 2 of each type
     this.fishTypes.forEach(FishType => {
       for (let i = 0; i < 2; i++) {
         this._addFishInternal(FishType);
       }
     });
 
-    // Completa até totalFishes com peixes aleatórios
+    // Complete up to totalFishes with random fish
     const remaining = totalFishes - this.fishes.length;
     for (let i = 0; i < remaining; i++) {
       const FishType = this.fishTypes[Math.floor(Math.random() * this.fishTypes.length)];
@@ -43,27 +43,27 @@ export class Fishes {
     return fish;
   }
 
-  // Adiciona peixe do tipo fishType (string 'Fish1', 'Fish2' ou 'Fish3')
+  // Add fish of type fishType (string 'Fish1', 'Fish2' or 'Fish3')
   addFish(fishTypeStr) {
     const FishType = this._getFishClassByName(fishTypeStr);
     if (!FishType) return;
 
-    // Limite máximo de peixes no aquário (20)
+    // Maximum limit of fish in the aquarium (20)
     if (this.fishes.length >= 20) return;
 
     this._addFishInternal(FishType);
   }
 
-  // Remove um peixe do tipo fishTypeStr, o último adicionado desse tipo
+  // Remove one fish of type fishTypeStr, the last added of that type
   removeFish(fishTypeStr) {
     const FishType = this._getFishClassByName(fishTypeStr);
     if (!FishType) return;
 
-    // Não deixa ter menos de 1 peixe desse tipo
+    // Don't allow less than 1 fish of this type
     const fishesOfType = this.fishes.filter(f => f instanceof FishType);
     if (fishesOfType.length <= 1) return;
 
-    // Remove o último peixe desse tipo da cena e do array
+    // Remove the last fish of this type from scene and array
     const fishToRemove = fishesOfType[fishesOfType.length - 1];
     this.scene.remove(fishToRemove.mesh);
     this.fishes.splice(this.fishes.indexOf(fishToRemove), 1);
@@ -94,14 +94,14 @@ export class Fishes {
 
     this.boostUntil = Date.now() + 5000;
 
-    // 🔊 Tocar som
+    // Play sound
     const audio = document.getElementById('feedSound');
     if (audio) {
       audio.currentTime = 0;
       audio.play();
     }
 
-    // ✨ Efeito visual de comida
+    // Food visual effect
     for (let i = 0; i < 20; i++) {
       const geometry = new THREE.SphereGeometry(0.2, 12, 12);
       const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });

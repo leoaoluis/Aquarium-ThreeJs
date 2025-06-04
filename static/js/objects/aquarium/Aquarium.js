@@ -62,7 +62,7 @@ export class Aquarium {
 
         this.mesh.add(root);
 
-        // Caixa manual para interior aquário
+        // Box for the aquarium
         const center = new THREE.Vector3(0, 14, 0);
         const halfSize = new THREE.Vector3(23, 10.5, 8);
         this.boundingBox = new THREE.Box3().setFromCenterAndSize(center, halfSize.multiplyScalar(2));
@@ -73,7 +73,7 @@ export class Aquarium {
 
         if (this.onLoaded) this.onLoaded(boxCenter, boxSize, this.boundingBox);
 
-        // Som limpeza
+        // Cleaning sound
         const cleanAudio = document.getElementById('clean');
         const cleanBtn = document.getElementById('cleanBtn');
         if (cleanBtn && cleanAudio) {

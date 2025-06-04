@@ -1,3 +1,4 @@
+// Import of required libraries and modules
 import * as THREE from '../../static/js/modules/three_rev.js';
 import { OrbitControls } from './modules/OrbitControls.js';
 import { Aquarium } from './objects/aquarium/Aquarium.js';
@@ -5,19 +6,25 @@ import { Fishes } from './objects/fishes/Fishes.js';
 import { FirstPersonControls } from './modules/obj2/FirstPersonControls.js';
 import { Accessories } from './objects/accessories.js';
 
+// Creation of the main scene with light blue background color
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('#87CEFA');
 
+// Camera perspective setting
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+//  Configuration of the WebGL renderer with antialiasing
 const renderer = new THREE.WebGLRenderer({ 
   antialias: true, 
   canvas: document.getElementById('gl-canvas') 
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 
+// Activation and configuration of the shadow system
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+// Creation and configuration of orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.05;
@@ -27,6 +34,7 @@ controls.panSpeed = 0.5;
 controls.minDistance = 5;
 controls.maxDistance = 100;
 
+// Light Configuration
 const directionalLight = new THREE.DirectionalLight(0xfffbe0, 0.35);
 directionalLight.position.set(-30, 50, 30);
 directionalLight.castShadow = true;
@@ -41,31 +49,36 @@ directionalLight.shadow.camera.top = 50;
 directionalLight.shadow.camera.bottom = -50;
 scene.add(directionalLight);
 
+// Ambient light
 const ambientLight = new THREE.AmbientLight(0xfff2e5, 0.8);
 scene.add(ambientLight);
 
+// Pontual light
 const fishLight = new THREE.PointLight(0xffffff, 0.1, 10);
 fishLight.position.set(0, 10, 0);
 scene.add(fishLight);
 
+// Spot light
 const spot = new THREE.SpotLight(0xffefd5, 0.2);
 spot.position.set(0, 80, 0);
 spot.angle = Math.PI / 4;
 spot.penumbra = 0.5;
 scene.add(spot);
 
-let fpControls;
-let mode = 'creative';
-let boundingBox = null;
-let roomBoundingBox = null;
-let fishViewFlag = 0;
-const clock = new THREE.Clock();
-const initialCameraPosition = new THREE.Vector3();
+// Game state variables
+let fpControls; 
+let mode = 'creative'; 
+let boundingBox = null; 
+let roomBoundingBox = null; 
+let fishViewFlag = 0; 
+const clock = new THREE.Clock(); 
+const initialCameraPosition = new THREE.Vector3(); 
 
+// Pause Menu
 const pauseMenu = document.getElementById('pauseMenu');
 
+// Fish Menu
 window.addEventListener('DOMContentLoaded', () => {
-  // Corrigido toggle do menu peixes
   const toggleBtn = document.getElementById('toggleFishMenu');
   const fishMenu = document.getElementById('fishMenu');
 
@@ -82,9 +95,11 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Aquarium
 const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
   scene.add(aquarium.mesh);
 
+  // Inicial camera position
   camera.position.set(boxCenter.x, boxCenter.y + boxSize, boxCenter.z + boxSize * 15);
   initialCameraPosition.copy(camera.position);
   camera.lookAt(boxCenter);
@@ -93,14 +108,17 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
 
   boundingBox = passedBoundingBox;
 
+  // Room limits
   roomBoundingBox = new THREE.Box3(
     new THREE.Vector3(-100, 0, -30),
     new THREE.Vector3(100, 125, 120)
   );
 
+  // Initialization of first-person controls
   fpControls = new FirstPersonControls(camera, renderer.domElement);
   fpControls.enabled = false;
 
+  // Event listeners
   window.addEventListener('keydown', (e) => {
     if (e.key === 'f' || e.key === 'F') {
       mode = 'fish';
@@ -114,6 +132,7 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
       fpControls.verticalMin = 1.0;
       fpControls.verticalMax = 2.0;
     } else if (e.key === 't' || e.key === 'T') {
+      // Creative mode
       mode = 'creative';
       fpControls.enabled = false;
       controls.enabled = true;
@@ -123,18 +142,20 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
       controls.target.copy(boxCenter);
       controls.update();
     } else if (e.key === 'Escape') {
+      // Show pause menu
       if (pauseMenu) pauseMenu.style.display = 'flex';
     }
   });
 
+  // Fish spawn
   const fishes = new Fishes(scene);
   fishes.setBoundingBox(boundingBox);
 
-  // Novos elementos de áudio
+  // Audio
   const press1Sound = document.getElementById('press1Sound');
   const press2Sound = document.getElementById('press2Sound');
 
-  // Liga os botões do menu de peixes para controlar o aquário
+  // Configuration of the fish menu controls
   const fishMenuList = document.getElementById('fishList');
   fishMenuList.querySelectorAll('.fishItem').forEach(item => {
     const fishType = item.getAttribute('data-fishtype');
@@ -143,6 +164,7 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
     const minusBtn = item.querySelector('.fishMinus');
     const countSpan = item.querySelector('.fishCount');
 
+    // Add fish
     plusBtn.addEventListener('click', () => {
       fishes.addFish(fishType);
       updateFishCount(fishType);
@@ -152,6 +174,7 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
       }
     });
 
+    // Remove fish
     minusBtn.addEventListener('click', () => {
       fishes.removeFish(fishType);
       updateFishCount(fishType);
@@ -161,7 +184,7 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
       }
     });
 
-    // Atualiza visualmente a contagem de peixes naquele tipo no menu
+    // Updates count of fish in menu
     function updateFishCount(fishTypeStr) {
       const count = fishes.fishes.filter(f => {
         if (fishTypeStr === 'Fish1') return f instanceof fishes.fishTypes[0];
@@ -173,13 +196,15 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
       countSpan.textContent = count;
     }
 
-    // Inicializa contagem no menu
+    // Initializes count of fish
     updateFishCount(fishType);
   });
 
-  let dirtLevel = 0;
-  let hungerLevel = 0;
+  // Status system of the aquarium
+  let dirtLevel = 0; 
+  let hungerLevel = 0; 
 
+  // Updates the status display
   const updateStatusDisplay = () => {
     const dirtText = document.getElementById('dirtStatus');
     const hungerText = document.getElementById('hungerStatus');
@@ -189,6 +214,7 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
     if (hungerText) hungerText.textContent = `${hungerLevel}%`;
     if (fishState) fishState.textContent = hungerLevel >= 100 ? 'Parados' : 'Ativos';
 
+    // Updates dirt visual effects
     if (aquarium.dirtTarget) {
       const opacity = 0.15 + (dirtLevel / 100) * 0.3;
       const cleanColor = new THREE.Color(0.1, 0.2, 0.7);
@@ -199,16 +225,19 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
     }
   };
 
+  // Counter for dirt
   setInterval(() => {
     dirtLevel = Math.min(100, dirtLevel + 1);
     updateStatusDisplay();
   }, 500);
 
+  // Timer for hunger level
   setInterval(() => {
     hungerLevel = Math.min(100, hungerLevel + 1);
     updateStatusDisplay();
   }, 100);
 
+  // Cleaning btn
   const cleanBtn = document.getElementById('cleanBtn');
   if (cleanBtn) {
     cleanBtn.addEventListener('click', () => {
@@ -223,6 +252,7 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
     });
   }
 
+  // Feed btn
   const feedBtn = document.getElementById('feedBtn');
   if (feedBtn) {
     feedBtn.addEventListener('click', () => {
@@ -232,6 +262,7 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
     });
   }
 
+  // Buttons to switch between views
   const fpViewBtn = document.getElementById('fpViewBtn');
   const tpViewBtn = document.getElementById('tpViewBtn');
 
@@ -249,6 +280,7 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
     });
   }
 
+  // Setting the pause menu buttons
   const continueBtn = document.getElementById('continueBtn');
   const mainMenuBtn = document.getElementById('mainMenuBtn');
   const aboutBtn = document.getElementById('aboutBtn');
@@ -271,6 +303,7 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
     });
   }
 
+  // Main function of animation
   function animate() {
     requestAnimationFrame(animate);
     const hungerFactor = Math.pow(1 - hungerLevel / 100, 2);
@@ -278,19 +311,21 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
 
     const delta = clock.getDelta();
 
+    // Update controls
     if (fpControls.enabled) {
       fpControls.update(delta);
       const pos = camera.position;
 
-      const currentBoundingBox = boundingBox;
-      if (currentBoundingBox) {
-        pos.x = THREE.MathUtils.clamp(pos.x, currentBoundingBox.min.x, currentBoundingBox.max.x);
-        pos.y = THREE.MathUtils.clamp(pos.y, currentBoundingBox.min.y, currentBoundingBox.max.y);
-        pos.z = THREE.MathUtils.clamp(pos.z, currentBoundingBox.min.z, currentBoundingBox.max.z);
+      // Keeps the camera within aquarium limits
+      if (boundingBox) {
+        pos.x = THREE.MathUtils.clamp(pos.x, boundingBox.min.x, boundingBox.max.x);
+        pos.y = THREE.MathUtils.clamp(pos.y, boundingBox.min.y, boundingBox.max.y);
+        pos.z = THREE.MathUtils.clamp(pos.z, boundingBox.min.z, boundingBox.max.z);
       }
     } else {
       controls.update();
       const pos = camera.position;
+      //  Keeps the camera within room limits
       if (roomBoundingBox) {
         pos.x = THREE.MathUtils.clamp(pos.x, roomBoundingBox.min.x, roomBoundingBox.max.x);
         pos.y = THREE.MathUtils.clamp(pos.y, roomBoundingBox.min.y, roomBoundingBox.max.y);
@@ -298,15 +333,18 @@ const aquarium = new Aquarium((boxCenter, boxSize, passedBoundingBox) => {
       }
     }
 
+    // Render the scene
     renderer.render(scene, camera);
   }
   animate();
 });
 
+// Responsive resizing
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+//  Adds accessories to the scene
 new Accessories(scene);
